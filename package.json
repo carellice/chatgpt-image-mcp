@@ -1,0 +1,42 @@
+{
+  "name": "chatgpt-image-mcp",
+  "version": "2.0.0",
+  "description": "MCP server that lets Claude (or any MCP client) generate and edit images with ChatGPT through the locally installed ChatGPT/Codex app. No API key needed.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "chatgpt-image-mcp": "index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "chatgpt",
+    "codex",
+    "image-generation",
+    "claude",
+    "claude-code"
+  ],
+  "author": "carellice",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carellice/chatgpt-image-mcp.git"
+  },
+  "homepage": "https://github.com/carellice/chatgpt-image-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/carellice/chatgpt-image-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  }
+}
