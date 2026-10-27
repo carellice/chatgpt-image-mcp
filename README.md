@@ -28,6 +28,8 @@ No API key and no extra billing: images are generated with your ChatGPT subscrip
 - 💾 **Saved to disk** wherever you want, with safe file names and no overwrites
 - 🧩 Works with **Claude Code**, **Claude Desktop** and any other MCP client
 
+> **New here?** Jump to [Getting started](#-getting-started). You can even let your AI install it for you.
+
 ## ⚙️ How it works
 
 ```mermaid
@@ -52,15 +54,56 @@ locked-down configuration:
 
 The server then collects the resulting image from `~/.codex/generated_images/`.
 
-## 📋 Requirements
+## 🚀 Getting started
 
-- **ChatGPT desktop app** (Codex) installed, and signed in with a ChatGPT account that includes image generation.
-  Check it with `codex login status`, which should print *"Logged in using ChatGPT"*.
-- **Node.js 18+**
+Setup takes about 5 minutes. You can let your AI assistant do it for you (option A), or follow the steps yourself (option B).
 
-> On macOS and Linux it should work with the standalone Codex CLI (`npm i -g @openai/codex`, then `codex login`) available on your `PATH`. This hasn't been tested yet, so feedback is welcome.
+### Option A: let your AI set it up 🤖
 
-## 🚀 Installation
+Open **Claude Code** (or another AI coding agent that can run commands on your computer) and paste this prompt:
+
+```text
+Install and configure the MCP server https://github.com/carellice/chatgpt-image-mcp for me.
+
+1. Check that Node.js 18 or newer is installed (`node --version`). If it isn't, stop and tell me to install it from https://nodejs.org.
+2. Find the Codex CLI. On Windows it ships with the ChatGPT desktop app:
+   PowerShell: (Get-AppxPackage -Name OpenAI.Codex).InstallLocation + "\app\resources\codex.exe"
+   On macOS/Linux, look for `codex` on the PATH.
+   If you can't find it, stop and tell me to install the ChatGPT desktop app from https://chatgpt.com/download and sign in.
+3. Run `<codex> login status`. It must say "Logged in using ChatGPT". If it doesn't, stop and tell me to open the ChatGPT app and sign in.
+4. Clone the repository into a permanent folder (for example ~/Documents/GitHub/MCPs/chatgpt-image-mcp, not a temp folder) and run `npm install` there.
+5. Register it for all my projects:
+   claude mcp add chatgpt-image -s user -- node "<absolute path>/index.js"
+   (For Claude Desktop, add the equivalent entry to claude_desktop_config.json instead.)
+6. Verify it with `claude mcp get chatgpt-image`: the status must be "Connected".
+7. Tell me where you installed it and remind me to start a new session to use it.
+```
+
+Then start a new session and ask for an image.
+
+### Option B: step by step 🧭
+
+**1. Install the ChatGPT desktop app and sign in**
+
+Download it from [chatgpt.com/download](https://chatgpt.com/download) (on Windows it is also on the Microsoft Store), open it and sign in with your ChatGPT account. Your plan needs to include image generation.
+
+**2. Check the sign-in** (optional but recommended)
+
+On Windows the app's `codex` CLI isn't on your `PATH`, so call it through its full path in **PowerShell**:
+
+```powershell
+& "$((Get-AppxPackage -Name OpenAI.Codex).InstallLocation)\app\resources\codex.exe" login status
+```
+
+It should print `Logged in using ChatGPT`.
+
+> 🍎🐧 **macOS / Linux:** install the standalone Codex CLI (`npm i -g @openai/codex`) and run `codex login`. This hasn't been tested yet, so feedback is welcome.
+
+**3. Install Node.js 18 or newer**
+
+Check with `node --version`. If it's missing, install the LTS version from [nodejs.org](https://nodejs.org).
+
+**4. Download the server into a permanent folder**
 
 ```bash
 git clone https://github.com/carellice/chatgpt-image-mcp.git
@@ -68,30 +111,55 @@ cd chatgpt-image-mcp
 npm install
 ```
 
-### Claude Code
+> 📌 Pick a folder you won't move or delete, such as `Documents/GitHub/MCPs/chatgpt-image-mcp`. Your AI client starts the server from this exact path every time.
+
+**5. Register it in your AI client**
+
+<details open>
+<summary><b>Claude Code</b></summary>
 
 ```bash
-claude mcp add chatgpt-image -s user -- node "/absolute/path/to/chatgpt-image-mcp/index.js"
+claude mcp add chatgpt-image -s user -- node "C:/full/path/to/chatgpt-image-mcp/index.js"
 ```
 
-`-s user` makes it available in every project. Start a new session and it's ready.
+`-s user` makes it available in every project. Check it with `claude mcp get chatgpt-image`, which should report `✔ Connected`.
 
-### Claude Desktop
+</details>
 
-Add this to `claude_desktop_config.json`:
+<details>
+<summary><b>Claude Desktop</b></summary>
+
+Open **Settings → Developer → Edit Config** and add this to `claude_desktop_config.json`, then restart Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "chatgpt-image": {
       "command": "node",
-      "args": ["C:/absolute/path/to/chatgpt-image-mcp/index.js"]
+      "args": ["C:/full/path/to/chatgpt-image-mcp/index.js"]
     }
   }
 }
 ```
 
-You don't need to start the server yourself: the MCP client launches it when a session starts and stops it when the session ends.
+</details>
+
+<details>
+<summary><b>Other MCP clients</b></summary>
+
+Any client that supports stdio MCP servers works. The command is `node` and the only argument is the full path to `index.js`.
+
+</details>
+
+**6. Try it**
+
+Start a **new** session and ask:
+
+> *Generate an image of a red apple on a white background.*
+
+After about a minute you'll get the file path and a preview. 🎉
+
+> You never need to start the server by hand: your AI client launches it in the background when a session starts and stops it when the session ends.
 
 ## 💬 Usage
 
@@ -149,7 +217,8 @@ Every setting is optional and is set through environment variables (in the `env`
 | Problem | Fix |
 |---|---|
 | `Codex CLI not found` | Install or update the ChatGPT desktop app, or set `CODEX_PATH`. On Windows the app path changes with every update; the server finds it again on each start through `Get-AppxPackage OpenAI.Codex`. |
-| `No image was generated` | Run `codex login status`. Your plan's image limit may have been reached, or the prompt may have been refused by content policies. |
+| `No image was generated` | Check the sign-in (step 2 of the setup). Your plan's image limit may have been reached, or the prompt may have been refused by content policies. |
+| It worked, then stopped | You probably moved or renamed the server folder. Register it again with the new path. |
 | The tool doesn't show up | Start a **new** session. Check `claude mcp get chatgpt-image`. |
 | Previews are missing | Images over ~3.5 MB aren't sent inline, but they are still saved to disk. |
 
