@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/icon.png" alt="chatgpt-image-mcp icon" width="160">
+
 # 🎨 chatgpt-image-mcp
 
 **Let Claude generate and edit images with ChatGPT, using the ChatGPT app already on your computer.**
